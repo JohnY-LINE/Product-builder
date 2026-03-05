@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-label="Uchiwa Promo">
+  <defs>
+    <linearGradient id="bg3" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#0e2030"/>
+      <stop offset="1" stop-color="#2f6e74"/>
+    </linearGradient>
+    <linearGradient id="fan" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#f9f2b9"/>
+      <stop offset="1" stop-color="#fbbf8a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#bg3)"/>
+  <ellipse cx="600" cy="360" rx="290" ry="230" fill="url(#fan)"/>
+  <rect x="560" y="520" rx="18" ry="18" width="80" height="220" fill="#f3e8d2"/>
+  <line x1="600" y1="150" x2="600" y2="540" stroke="#ffffff" opacity="0.28" stroke-width="4"/>
+  <line x1="450" y1="180" x2="540" y2="530" stroke="#ffffff" opacity="0.24" stroke-width="4"/>
+  <line x1="750" y1="180" x2="660" y2="530" stroke="#ffffff" opacity="0.24" stroke-width="4"/>
+  <text x="600" y="370" text-anchor="middle" font-family="SUIT, sans-serif" font-weight="800" font-size="78" fill="#1f2937">UCHIWA</text>
+  <text x="600" y="810" text-anchor="middle" font-family="SUIT, sans-serif" font-weight="700" font-size="50" fill="#def7ff">LIVE TOUR GOODS</text>
+</svg>

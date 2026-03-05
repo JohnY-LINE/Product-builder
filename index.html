@@ -1,14 +1,1041 @@
-
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lotto Number Generator</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>LineFactory Editor v0.3 (KR) - Pro Resize</title>
+  <link rel="stylesheet" href="style.css" />
+
 </head>
 <body>
-    <lotto-generator></lotto-generator>
-    <script src="main.js"></script>
+  <header class="commerceHeader" aria-label="Store header">
+    <a href="#/" class="commerceBrand">LINEFACTORY</a>
+    <nav class="commerceNav" aria-label="Category">
+      <a href="#/products/category/slogan" class="navItem" data-top-category="슬로건">슬로건</a>
+      <a href="#/products/category/uchiwa" class="navItem" data-top-category="우치와">우치와</a>
+      <a href="#/products/category/keyring" class="navItem" data-top-category="키링">키링</a>
+      <a href="#/products/category/small-goods" class="navItem" data-top-category="소품">소품</a>
+      <a href="#/products/category/mugcup" class="navItem" data-top-category="머그컵">머그컵</a>
+      <a href="#/products/category/tshirt" class="navItem" data-top-category="티셔츠">티셔츠</a>
+      <a href="#/products/category/special-deals" class="navItem navItemDeal" data-top-category="특가상품">특가상품 <span aria-hidden="true">🔔</span></a>
+    </nav>
+    <div class="commerceActions">
+      <div class="searchBox" role="search">
+        <input type="text" placeholder="상품 검색하기" aria-label="상품 검색" />
+      </div>
+      <button type="button" class="iconBtn" aria-label="공유">⤴</button>
+      <button type="button" class="iconBtn" aria-label="좋아요">♡</button>
+      <button type="button" class="iconBtn" aria-label="계정">◌</button>
+    </div>
+  </header>
+  <div id="adminThemeSwitch" class="adminThemeSwitch" hidden>
+    <div class="adminThemeControl">
+      <label for="adminThemeSelect">Admin UI</label>
+      <select id="adminThemeSelect">
+        <option value="clean-blue">클린 블루</option>
+        <option value="warm-neutral">웜 뉴트럴</option>
+      </select>
+    </div>
+    <div class="adminThemeControl">
+      <label for="adminColorThemeSelect">Color Theme</label>
+      <select id="adminColorThemeSelect">
+        <option value="light-mist">라이트 미스트</option>
+        <option value="dark-slate">다크 슬레이트</option>
+        <option value="forest-mint">포레스트 민트</option>
+        <option value="ruby-night">루비 나이트</option>
+      </select>
+    </div>
+    <div class="adminThemeControl">
+      <label for="adminButtonThemeSelect">Button Theme</label>
+      <select id="adminButtonThemeSelect">
+        <option value="sunset">선셋 코랄</option>
+        <option value="ocean">오션 블루</option>
+        <option value="mono">모노 그레이</option>
+      </select>
+    </div>
+    <div class="adminThemeControl">
+      <label for="adminFontThemeSelect">Font Theme</label>
+      <select id="adminFontThemeSelect">
+        <option value="classic">클래식</option>
+        <option value="cool-gray">쿨 그레이</option>
+        <option value="warm-ink">웜 잉크</option>
+        <option value="high-contrast">하이 콘트라스트</option>
+      </select>
+    </div>
+  </div>
+
+  <main class="routeShell">
+    <section id="page-home" class="routePage">
+      <div class="routeContainer">
+        <section class="appleHero fanHero">
+          <video class="fanHeroVideo" autoplay muted loop playsinline poster="pic/fan-hero-poster.svg">
+            <source src="https://cdn.coverr.co/videos/coverr-concert-crowd-1579/1080p.mp4" type="video/mp4" />
+          </video>
+          <div class="fanHeroOverlay"></div>
+          <div class="fanHeroInner">
+            <p class="appleEyebrow">LINEFACTORY FAN GOODS STUDIO</p>
+            <h1 class="appleHeadline">팬굿즈를 무대처럼.<br />한 컷으로 완성.</h1>
+            <p class="appleLead">아티스트 응원봉, 슬로건, 키링, 우치와까지. 이미지 업로드부터 시안 확인, 제작 요청까지 한 번에 진행하세요.</p>
+            <div class="fanHeroChips">
+              <span>SLG / SLOGAN</span>
+              <span>UCHIWA</span>
+              <span>KEYRING</span>
+              <span>MUG CUP</span>
+            </div>
+            <div class="appleHeroActions">
+              <a class="btn" href="#/products">팬굿즈 둘러보기</a>
+              <a class="btn2" href="#/editor/default_product">지금 제작 시작</a>
+            </div>
+          </div>
+          <div class="fanHeroGallery" aria-hidden="true">
+            <div class="fanHeroThumb"><img src="pic/fan-hero-thumb-1.svg" alt="" /></div>
+            <div class="fanHeroThumb"><img src="pic/fan-hero-thumb-2.svg" alt="" /></div>
+            <div class="fanHeroThumb"><img src="pic/fan-hero-thumb-3.svg" alt="" /></div>
+          </div>
+        </section>
+
+        <section class="appleFeatureStrip" aria-label="platform highlights">
+          <article class="appleFeatureCard">
+            <h3>Precision Editor</h3>
+            <p>안전영역/블리드 가이드 기반 배치로 출력 정확도 향상</p>
+          </article>
+          <article class="appleFeatureCard">
+            <h3>Multi View Mockup</h3>
+            <p>앞면/뒷면 페이지 템플릿을 연결해 실제 판매 화면처럼 검수</p>
+          </article>
+          <article class="appleFeatureCard">
+            <h3>Production Ready</h3>
+            <p>고해상도 생산 파일과 원본 자산을 함께 관리</p>
+          </article>
+        </section>
+
+        <section class="appleBlock">
+          <div class="appleBlockHead">
+            <h2>Category</h2>
+            <a class="btn2" href="#/products">전체 상품</a>
+          </div>
+          <div class="homeCategoryGrid" id="homeCategoryGrid"></div>
+        </section>
+
+        <section class="appleBlock">
+          <div class="appleBlockHead">
+            <h2>Best Picks</h2>
+            <a class="btn2" href="#/products">더 보기</a>
+          </div>
+          <div class="sectionGrid" id="homeFeatured"></div>
+        </section>
+
+        <section class="appleBottomPanel">
+          <p class="appleBottomEyebrow">PROMOTION</p>
+          <h3>이번 주 팬굿즈 광고</h3>
+          <p>슬로건, 키링, 우치와 인기 라인업을 바로 확인하세요.</p>
+          <div class="promoAdGrid" aria-label="상품 광고 섹션">
+            <article class="promoAdCard promoAdSlogan">
+              <div class="promoAdBadge">SLOGAN</div>
+              <h4>응원 슬로건<br />스페셜 위크</h4>
+              <p>볼륨감 있는 타이포와 선명한 인쇄로 무대 존재감을 완성</p>
+            </article>
+            <article class="promoAdCard promoAdKeyring">
+              <div class="promoAdBadge">KEYRING</div>
+              <h4>키링 베스트<br />컬렉션</h4>
+              <p>아크릴 · PVC · 메탈 라인업을 균형감 있게 매칭</p>
+            </article>
+            <article class="promoAdCard promoAdUchiwa">
+              <div class="promoAdBadge">UCHIWA</div>
+              <h4>라이브 투어<br />우치와 에디션</h4>
+              <p>밝은 색감과 레이어 연출로 현장용 굿즈를 빠르게 제작</p>
+            </article>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="page-products" class="routePage" hidden>
+      <div class="routeContainer">
+        <h2 class="routeTitle">Product List</h2>
+        <p class="routeDesc">카드에서 상세로 이동 후 Customize를 시작하세요.</p>
+        <div class="adminFilterBar" id="productsCategoryFilter"></div>
+        <div class="sectionGrid" id="productsGrid"></div>
+      </div>
+    </section>
+
+    <section id="page-product-detail" class="routePage" hidden>
+      <div class="routeContainer detailLayout">
+        <div class="detailGallery">
+          <h3 id="detailTitle">상품</h3>
+          <div class="mockupTabs" id="mockupTabs"></div>
+          <div class="mockupView" id="mockupView">Mockup Preview</div>
+        </div>
+        <aside class="detailOptions">
+          <div id="detailBasePrice" class="priceBig">0원</div>
+          <div id="detailOptions"></div>
+          <div class="detailQtyBox">
+            <label>수량</label>
+            <div class="qtyStepper">
+              <button class="btn2" id="detailQtyMinus" type="button" aria-label="수량 감소">-</button>
+              <input id="detailQtyInput" type="number" min="1" step="1" value="1" />
+              <button class="btn2" id="detailQtyPlus" type="button" aria-label="수량 증가">+</button>
+            </div>
+          </div>
+          <div class="priceSummary" id="detailPriceSummary"></div>
+          <div class="finalCheckBox" id="detailFinalCheck"></div>
+          <a class="btn" id="detailCustomizeBtn" href="#/editor/default_product">Customize</a>
+        </aside>
+        <section class="detailExtra" id="detailExtraSection">
+          <h3>상세 설명</h3>
+          <div id="detailRichContent" class="detailRichContent"></div>
+        </section>
+      </div>
+    </section>
+
+    <section id="page-my-submissions" class="routePage" hidden>
+      <div class="routeContainer">
+        <h2 class="routeTitle">My Submissions</h2>
+        <div class="dataTableWrap">
+          <table class="dataTable">
+            <thead><tr><th>Date</th><th>Product</th><th>Options</th><th>Status</th></tr></thead>
+            <tbody id="mySubmissionsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="page-admin-login" class="routePage" hidden>
+      <div class="routeContainer narrow">
+        <h2 class="routeTitle">Admin Login</h2>
+        <div class="section">
+          <label>Email</label>
+          <input type="text" placeholder="admin@linefactory.com" />
+          <label style="margin-top:10px">Password</label>
+          <input type="text" placeholder="••••••••" />
+          <div class="heroActions" style="margin-top:12px">
+            <a class="btn" href="#/admin/products">Login</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="page-admin-products" class="routePage" hidden>
+      <div class="routeContainer">
+        <div class="routeHead">
+          <h2 class="routeTitle">Admin Products</h2>
+          <div class="adminHeadActions">
+            <a class="btn2" href="#/admin/products/new">+ New Product</a>
+            <button class="btn2 dangerBtn" id="adminDeleteSelectedProductsBtn" type="button">선택 상품 삭제</button>
+            <button class="btn adminHomeIconBtn" id="adminFinalizeApplyBtn" type="button" aria-label="홈으로" title="홈으로">
+              <svg class="homeIconSvg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M3 10.5L12 3l9 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M5.5 9.5V20a1 1 0 0 0 1 1h4.5v-5.5a1 1 0 0 1 1-1h0a1 1 0 0 1 1 1V21h4.5a1 1 0 0 0 1-1V9.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <p class="routeDesc adminRouteLead">상품, 메뉴, 하위카테고리, 에셋 설정을 한 화면에서 빠르게 관리할 수 있습니다.</p>
+
+        <section class="section adminProductsHero" data-no-accordion="1">
+          <div class="adminHeroStats" id="adminProductsSummary"></div>
+          <div class="adminHeroTools">
+            <button class="btn2" id="adminViewAllBtn" type="button">한눈에 보기</button>
+            <div class="adminQuickLinks" id="adminQuickLinks"></div>
+          </div>
+        </section>
+
+        <div class="adminFilterBar" id="adminProductsFilter">
+          <button class="adminFilterBtn active" type="button" data-admin-filter="all">전체</button>
+          <button class="adminFilterBtn" type="button" data-admin-filter="connection">연결</button>
+          <button class="adminFilterBtn" type="button" data-admin-filter="product">상품</button>
+          <button class="adminFilterBtn" type="button" data-admin-filter="menu">메뉴순서</button>
+          <button class="adminFilterBtn" type="button" data-admin-filter="subcategory">하위카테고리</button>
+          <button class="adminFilterBtn" type="button" data-admin-filter="asset">에셋</button>
+        </div>
+        <div class="adminProductsLayout">
+          <div class="adminProductsMain">
+            <section class="section adminCatalogPanel" id="adminSectionCatalog" data-no-accordion="1">
+              <div class="adminCatalogPanelHead">
+                <h3>상품 현황 보드</h3>
+                <p>카테고리별 공개 상태와 편집 진입을 한 번에 확인하세요.</p>
+              </div>
+              <div class="dataTableWrap">
+                <div id="adminProductsByCategory" class="adminCatAccordionList"></div>
+              </div>
+            </section>
+
+            <div class="sectionGrid twoCol" style="margin-top:12px">
+              <div class="section" id="adminSectionConnection" data-admin-block="connection">
+            <label>Supabase 연결</label>
+            <div class="row">
+              <div>
+                <label>Project URL</label>
+                <input id="sbUrl" type="text" placeholder="https://xxxxx.supabase.co" />
+              </div>
+              <div>
+                <label>Anon Key</label>
+                <input id="sbAnonKey" type="text" placeholder="eyJ..." />
+              </div>
+            </div>
+            <div class="row" style="margin-top:10px">
+              <div>
+                <label>Storage Bucket</label>
+                <input id="sbBucket" type="text" value="editor-assets" />
+              </div>
+              <div class="sbActions">
+                <button class="btn2" id="sbConnectBtn" type="button">연결/갱신</button>
+                <span class="pillTag" id="sbStatus">LOCAL</span>
+              </div>
+            </div>
+            <div class="hint">연결 시 템플릿/이미지 데이터는 Supabase를 우선 사용합니다. 연결 정보는 브라우저 localStorage에 저장됩니다.</div>
+          </div>
+
+          <div class="section" id="adminSectionProduct" data-admin-block="product">
+            <label>관리자: 상품 관리</label>
+            <div class="row">
+              <div>
+                <label>상품 ID</label>
+                <input id="adminProductId" type="text" placeholder="예: keyring_basic" />
+              </div>
+              <div>
+                <label>상품 이름</label>
+                <input id="adminProductName" type="text" placeholder="예: 키링 기본형" />
+              </div>
+            </div>
+            <div class="row" style="margin-top:10px">
+              <div>
+                <label>카테고리</label>
+                <select id="adminProductCategory">
+                  <option value="슬로건">슬로건</option>
+                  <option value="우치와">우치와</option>
+                  <option value="키링">키링</option>
+                  <option value="소품">소품</option>
+                  <option value="머그컵">머그컵</option>
+                  <option value="티셔츠">티셔츠</option>
+                  <option value="특가상품">특가상품</option>
+                </select>
+                <div class="row" style="margin-top:8px">
+                  <input id="adminProductCategoryInput" type="text" placeholder="새 카테고리 입력" />
+                  <button class="btn2" id="adminAddCategoryBtn" type="button">카테고리 추가</button>
+                </div>
+                <label style="margin-top:8px">하위카테고리</label>
+                <select id="adminProductSubcategory">
+                  <option value="">선택 안함</option>
+                </select>
+              </div>
+              <div>
+                <label>캔버스 표시 방식</label>
+                <select id="adminProductCanvasMode">
+                  <option value="fit">기본(Fit)</option>
+                  <option value="compact">컴팩트(작게)</option>
+                  <option value="focus">포커스(크게)</option>
+                </select>
+              </div>
+              <div>
+                <label>제작방식 목록(쉼표 구분)</label>
+                <input id="adminProductMakeTypeInput" type="text" placeholder="예: 인쇄, 반사, 자수" />
+              </div>
+            </div>
+            <div class="row" style="margin-top:10px">
+              <div>
+                <label>기본 배경 이미지(선택)</label>
+                <select id="adminProductDefaultAsset">
+                  <option value="">선택 안함</option>
+                </select>
+              </div>
+              <div class="adminActionWrap">
+                <button class="btn" id="addProductBtn" type="button">상품 저장</button>
+              </div>
+            </div>
+            <div class="hint">상품 저장 시 제작방식/기본 배경 이미지도 함께 저장됩니다.</div>
+            <div class="assetList compact" id="adminProductList" style="display:none"></div>
+          </div>
+
+          <div class="section" id="adminSectionMenu" data-admin-block="menu">
+            <label>관리자: 상단 카테고리 메뉴 순서</label>
+            <div class="hint">위/아래 버튼으로 메뉴 표시 순서를 조정하면 상단 카테고리 메뉴에 즉시 반영됩니다.</div>
+            <div class="assetList compact" id="adminCategoryOrderList"></div>
+            <div class="adminActionWrap" style="margin-top:10px">
+              <button class="btn2" id="adminCategoryOrderResetBtn" type="button">기본 순서로 초기화</button>
+            </div>
+          </div>
+
+          <div class="section" id="adminSectionSubcategory" data-admin-block="subcategory">
+            <label>관리자: 카테고리별 하위카테고리 설정</label>
+            <div class="row">
+              <div>
+                <label>대상 카테고리</label>
+                <select id="adminSubtypeCategory">
+                  <option value="">카테고리 선택</option>
+                </select>
+              </div>
+              <div>
+                <label>하위카테고리 목록(쉼표 구분)</label>
+                <input id="adminSubtypeInput" type="text" placeholder="예: 아크릴 키링, PVC 키링, 메탈 키링" />
+              </div>
+            </div>
+            <div class="adminActionWrap" style="margin-top:10px">
+              <button class="btn" id="adminSubtypeSaveBtn" type="button">하위카테고리 저장</button>
+              <button class="btn2" id="adminSubtypeResetBtn" type="button">기본값으로 복원</button>
+            </div>
+            <div class="hint">여기서 설정한 하위카테고리는 각 카테고리 페이지의 섹션 제목으로 사용됩니다.</div>
+          </div>
+
+          <div class="section" data-admin-block="option" data-admin-hidden="1" style="display:none">
+            <label>관리자: 상품별 제작방식 옵션</label>
+            <div class="row">
+              <div>
+                <label>대상 상품</label>
+                <select id="adminOptionProduct">
+                  <option value="">불러오는 중...</option>
+                </select>
+              </div>
+              <div>
+                <label>제작방식 목록(쉼표 구분)</label>
+                <input id="adminMakeTypeInput" type="text" placeholder="예: 인쇄, 반사, 자수" />
+              </div>
+            </div>
+            <div class="adminActionWrap" style="margin-top:10px">
+              <button class="btn" id="saveMakeTypeBtn" type="button">옵션 저장</button>
+            </div>
+            <div class="hint">상품별 제작방식을 설정하면 사용자 모드의 제작방식 선택에 반영됩니다.</div>
+          </div>
+
+          <div class="section" data-admin-block="default" data-admin-hidden="1" style="display:none">
+            <label>관리자: 상품 기본 배경 이미지</label>
+            <div class="row">
+              <div>
+                <label>대상 상품</label>
+                <select id="adminDefaultProduct">
+                  <option value="">불러오는 중...</option>
+                </select>
+              </div>
+              <div>
+                <label>기본 배경 이미지</label>
+                <select id="adminDefaultAsset">
+                  <option value="">선택</option>
+                </select>
+              </div>
+            </div>
+            <div class="adminActionWrap" style="margin-top:10px">
+              <button class="btn" id="saveDefaultAssetBtn" type="button">기본 이미지 저장</button>
+              <button class="btn2" id="clearDefaultAssetBtn" type="button">기본 이미지 해제</button>
+            </div>
+            <div class="hint" id="adminDefaultInfo">상품 선택 시 자동으로 배경 이미지가 적용됩니다.</div>
+          </div>
+
+          <div class="section" id="adminSectionAsset" data-admin-block="asset">
+            <label>관리자: 사용자 선택용 이미지 등록</label>
+            <input id="adminImageTitle" type="text" placeholder="이미지 표시 이름(선택)" />
+            <div style="margin-top:10px">
+              <label>대상 상품</label>
+              <select id="adminImageProduct">
+                <option value="">불러오는 중...</option>
+              </select>
+            </div>
+            <div style="margin-top:10px">
+              <input id="adminImageFile" type="file" accept="image/*" multiple />
+            </div>
+            <div class="adminActionWrap" style="margin-top:10px">
+              <button class="btn" id="uploadAssetBtn" type="button">이미지 저장</button>
+              <button class="btn2" id="loadAssetBtn" type="button">이미지 불러오기</button>
+            </div>
+            <div class="hint" id="adminImagePickInfo">파일 선택 후 '이미지 저장'을 누르면 등록됩니다.</div>
+            <div class="assetList compact" id="adminImageList"></div>
+          </div>
+            </div>
+          </div>
+
+          <aside class="adminProductsSide">
+            <div class="section adminPulseBoard adminMiniPulse" data-no-accordion="1">
+              <label>스토어 현황</label>
+              <div class="homeStatList" id="adminStoreStats"></div>
+            </div>
+            <div class="section adminPulseBoard adminMiniPulse adminQuickGuide" data-no-accordion="1">
+              <label>빠른 이동</label>
+              <p id="adminWorkspaceUpdated" class="adminWorkspaceUpdated">업데이트 시간 -</p>
+              <div class="adminQuickLinks adminQuickLinksSide" id="adminQuickLinksSide"></div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="page-admin-product-form" class="routePage" hidden>
+      <div class="routeContainer">
+        <h2 class="routeTitle" id="adminProductFormTitle">Admin Product Form</h2>
+        <div class="sectionGrid twoCol">
+          <div class="section">
+            <label>상품 ID</label><input id="adminFormProductId" type="text" placeholder="예: mtm_basic" />
+            <label style="margin-top:10px">상품명</label><input id="adminFormProductName" type="text" placeholder="스페셜 인터록 오버핏 맨투맨" />
+            <label style="margin-top:10px">설명</label><textarea id="adminFormDescription" placeholder="상품 설명"></textarea>
+            <label style="margin-top:10px">카테고리</label>
+            <select id="adminFormCategory">
+              <option value="슬로건">슬로건</option>
+              <option value="우치와">우치와</option>
+              <option value="키링">키링</option>
+              <option value="소품">소품</option>
+              <option value="머그컵">머그컵</option>
+              <option value="티셔츠">티셔츠</option>
+              <option value="특가상품">특가상품</option>
+            </select>
+            <label style="margin-top:10px">하위카테고리</label>
+            <select id="adminFormSubcategory">
+              <option value="">선택 안함</option>
+            </select>
+            <label style="margin-top:10px">기본가</label><input id="adminFormBasePrice" type="number" min="0" step="100" placeholder="15900" />
+            <label style="margin-top:10px">태그(쉼표 구분)</label><input id="adminFormTags" type="text" placeholder="베스트, 오버핏" />
+            <label style="margin-top:10px">옵션: 사이즈 (예: S:+0, M:+1000)</label>
+            <textarea id="adminFormOptSize" placeholder="S:+0, M:+1000, L:+2000"></textarea>
+            <label style="margin-top:10px">옵션: 컬러 (예: Black:+0)</label>
+            <textarea id="adminFormOptColor" placeholder="Melange:+0, Black:+500, Navy:+500"></textarea>
+            <label style="margin-top:10px">옵션: 소재 (예: Standard:+0)</label>
+            <textarea id="adminFormOptMaterial" placeholder="Standard:+0, Premium:+3000"></textarea>
+          </div>
+          <div class="section">
+            <label>목업 뷰 이름(쉼표 구분)</label><input id="adminFormMockups" type="text" placeholder="Front, Back, Detail" />
+            <label style="margin-top:10px">캔버스 표시 모드</label>
+            <select id="adminFormCanvasMode">
+              <option value="fit">기본(Fit)</option>
+              <option value="compact">컴팩트(작게)</option>
+              <option value="focus">포커스(크게)</option>
+            </select>
+            <label style="margin-top:10px">판매 전시 상태</label>
+            <select id="adminFormPublished">
+              <option value="true">공개</option>
+              <option value="false">비공개</option>
+            </select>
+            <label style="margin-top:10px">연결 템플릿(다중 선택)</label>
+            <select id="adminFormTemplateLinks" multiple size="10"></select>
+            <div class="hint">선택한 템플릿은 이 상품의 에디터 템플릿으로 연결됩니다.</div>
+            <label style="margin-top:10px">상세페이지 에디터</label>
+            <div class="adminDetailEditorBox">
+              <div class="adminDetailEditorTabs">
+                <button class="btn2 active" type="button" id="adminFormDetailTabEdit">편집</button>
+                <button class="btn2" type="button" id="adminFormDetailTabPreview">미리보기</button>
+              </div>
+              <div class="adminDetailEditorToolbar" id="adminFormDetailToolbar">
+                <button class="btn2" type="button" data-editor-cmd="formatBlock" data-editor-value="P">본문</button>
+                <button class="btn2" type="button" data-editor-cmd="formatBlock" data-editor-value="H2">H2</button>
+                <button class="btn2" type="button" data-editor-cmd="formatBlock" data-editor-value="H3">H3</button>
+                <button class="btn2" type="button" data-editor-cmd="bold">B</button>
+                <button class="btn2" type="button" data-editor-cmd="italic">I</button>
+                <button class="btn2" type="button" data-editor-cmd="insertUnorderedList">List</button>
+                <button class="btn2" type="button" data-editor-cmd="createLink">링크</button>
+                <button class="btn2" type="button" data-editor-cmd="insertImage">이미지</button>
+                <button class="btn2" type="button" data-editor-template="shipping">배송안내</button>
+                <button class="btn2" type="button" data-editor-template="production">제작안내</button>
+                <button class="btn2" type="button" data-editor-template="notice">주의사항</button>
+                <button class="btn2" type="button" id="adminFormDetailAdvancedBtn">고급 편집기(새 창)</button>
+                <button class="btn2" type="button" id="adminFormDetailClearBtn">초기화</button>
+              </div>
+              <div id="adminFormDetailEditor" class="adminDetailEditor" contenteditable="true" spellcheck="true"></div>
+              <div id="adminFormDetailPreview" class="adminDetailPreview" hidden></div>
+            </div>
+            <div class="hint">상품별 상세페이지 하단에 노출되는 꾸미기 콘텐츠입니다.</div>
+            <div class="heroActions" style="margin-top:12px">
+              <button class="btn" type="button" id="adminFormSaveBtn">상품 저장</button>
+              <button class="btn2" type="button" id="adminFormDeleteBtn" style="display:none">상품 삭제</button>
+              <a class="btn2" href="#/admin/products">목록</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="page-admin-templates" class="routePage" hidden>
+      <div class="routeContainer">
+        <h2 class="routeTitle">Template Editor</h2>
+        <div class="adminFilterBar" id="adminTemplatesFilter">
+          <button class="adminFilterBtn active" type="button" data-admin-filter="all">전체</button>
+          <button class="adminFilterBtn" type="button" data-admin-filter="visual">시각 편집</button>
+          <button class="adminFilterBtn" type="button" data-admin-filter="manage">템플릿 관리</button>
+        </div>
+        <div class="sectionGrid twoCol" data-admin-block="visual">
+          <div class="section">
+            <label>Product</label><select id="tplEditorProduct"></select>
+            <label style="margin-top:10px">View Name</label><input id="tplEditorViewName" type="text" placeholder="Front / Back" />
+            <div class="row" style="margin-top:10px">
+              <div><label>X(%)</label><input id="tplX" type="number" min="0" max="100" value="20" /></div>
+              <div><label>Y(%)</label><input id="tplY" type="number" min="0" max="100" value="20" /></div>
+            </div>
+            <div class="row" style="margin-top:10px">
+              <div><label>W(%)</label><input id="tplW" type="number" min="1" max="100" value="60" /></div>
+              <div><label>H(%)</label><input id="tplH" type="number" min="1" max="100" value="60" /></div>
+            </div>
+            <label style="margin-top:10px">Output Size + DPI</label><input id="tplOutput" type="text" placeholder="30cm x 40cm @ 300DPI" value="30cm x 40cm @ 300DPI" />
+          </div>
+          <div class="section">
+            <label>Safe / Bleed</label><input id="tplSafeBleed" type="text" placeholder="safe: 8mm, bleed: 3mm" value="safe: 8mm, bleed: 3mm" />
+            <label style="margin-top:10px">Mask / Clip Path</label><input id="tplMask" type="text" placeholder="optional" />
+            <label style="margin-top:10px">Template Guide Upload</label><input id="tplGuideFile" type="file" />
+            <div class="templateStage" id="tplStage">
+              <div class="templateRect" id="tplRect">
+                <div class="templateHandle" id="tplHandle"></div>
+              </div>
+            </div>
+            <div class="heroActions" style="margin-top:12px">
+              <button class="btn2" type="button" id="tplApplyInputsBtn">값 적용</button>
+              <button class="btn" type="button" id="tplSaveBtn">템플릿 저장</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="section" style="margin-top:12px" data-admin-block="manage">
+          <label>관리자: 템플릿 추가</label>
+          <div class="row">
+            <div>
+              <label>템플릿 ID</label>
+              <input id="adminTplId" type="text" placeholder="예: strap_135x30" />
+            </div>
+            <div>
+              <label>템플릿 이름</label>
+              <input id="adminTplName" type="text" placeholder="예: 스트랩키링 135×30mm" />
+            </div>
+          </div>
+          <div class="row" style="margin-top:10px">
+            <div>
+              <label>대상 상품</label>
+              <select id="adminTplProduct">
+                <option value="">불러오는 중...</option>
+              </select>
+            </div>
+            <div>
+              <label>페이지 그룹</label>
+              <input id="adminTplPageGroup" type="text" placeholder="예: mtm_basic_pages" />
+            </div>
+          </div>
+          <div class="row" style="margin-top:10px">
+            <div>
+              <label>페이지 이름</label>
+              <input id="adminTplPageName" type="text" placeholder="예: 앞면 / 뒷면" value="앞면" />
+            </div>
+            <div class="adminActionWrap">
+              <button class="btn2" id="addTemplatePageBtn" type="button">페이지 추가</button>
+            </div>
+          </div>
+          <div class="row" style="margin-top:10px">
+            <div>
+              <label>그룹 페이지 불러오기</label>
+              <select id="adminTplPageSelect">
+                <option value="">현재 입력(미저장)</option>
+              </select>
+            </div>
+            <div class="adminActionWrap">
+              <button class="btn2" id="loadTemplatePageBtn" type="button">선택 페이지 불러오기</button>
+            </div>
+          </div>
+          <div class="row" style="margin-top:10px">
+            <div>
+              <label>가로(mm)</label>
+              <input id="adminTplW" type="number" min="10" step="1" value="135" />
+            </div>
+            <div>
+              <label>세로(mm)</label>
+              <input id="adminTplH" type="number" min="10" step="1" value="30" />
+            </div>
+          </div>
+          <div class="row" style="margin-top:10px">
+            <div>
+              <label>Bleed(mm)</label>
+              <input id="adminTplBleed" type="number" min="0" step="1" value="5" />
+            </div>
+            <div>
+              <label>Safe(mm)</label>
+              <input id="adminTplSafe" type="number" min="0" step="1" value="3" />
+            </div>
+          </div>
+          <div class="row" style="margin-top:10px">
+            <div>
+              <label>DPI</label>
+              <input id="adminTplDpi" type="number" min="72" step="1" value="300" />
+            </div>
+            <div>
+              <label>이미지 맞춤</label>
+              <select id="adminTplImageFit">
+                <option value="cover">가득 채우기(cover)</option>
+                <option value="contain">비율 유지(contain)</option>
+                <option value="fill">프레임 맞춤(fill)</option>
+                <option value="real">실사이즈(real-size)</option>
+              </select>
+            </div>
+          </div>
+          <div style="margin-top:10px">
+            <label>템플릿 배경 이미지(PNG)</label>
+            <input id="adminTplImageFile" type="file" accept="image/png" />
+          </div>
+          <div style="margin-top:10px">
+            <label>Bleed 가이드 이미지(PNG)</label>
+            <input id="adminTplBleedImageFile" type="file" accept="image/png" />
+          </div>
+          <div style="margin-top:10px">
+            <label>Safe 가이드 이미지(PNG)</label>
+            <input id="adminTplSafeImageFile" type="file" accept="image/png" />
+          </div>
+          <div class="hint" id="adminTplImageInfo">PNG 파일을 선택하면 드로잉창에서 바로 미리볼 수 있습니다.</div>
+          <div class="adminActionWrap" style="margin-top:10px">
+            <button class="btn2" id="previewTemplateBtn" type="button">드로잉창 미리보기</button>
+            <button class="btn" id="addTemplateBtn" type="button">템플릿 저장</button>
+            <button class="btn2" id="loadTemplateBtn" type="button">템플릿 불러오기</button>
+          </div>
+          <div class="assetList compact" id="adminTemplateList"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="page-admin-options" class="routePage" hidden>
+      <div class="routeContainer">
+        <h2 class="routeTitle">Option Groups + Pricing</h2>
+        <div class="sectionGrid twoCol">
+          <div class="section">
+            <label>Option Group</label><input type="text" placeholder="Size" />
+            <label style="margin-top:10px">Values</label><textarea placeholder="S:+0, M:+1000, L:+2000"></textarea>
+          </div>
+          <div class="section">
+            <label>Stock / Visibility</label><textarea placeholder="S:100 active, M:40 active, L:0 hidden"></textarea>
+            <div class="heroActions" style="margin-top:12px">
+              <a class="btn" href="#/admin/options">옵션 저장</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="page-admin-inbox" class="routePage" hidden>
+      <div class="routeContainer">
+        <h2 class="routeTitle">Submission Inbox</h2>
+        <div class="dataTableWrap">
+          <table class="dataTable">
+            <thead><tr><th>Date</th><th>Product</th><th>Customer</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="adminInboxBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="page-admin-submission-detail" class="routePage" hidden>
+      <div class="routeContainer">
+        <h2 class="routeTitle">Submission Detail</h2>
+        <div class="sectionGrid twoCol">
+          <div class="section">
+            <h3>Preview</h3>
+            <div class="mockupView" style="height:280px" id="submissionPreviewBox">Mockup / Preview Files</div>
+            <div class="heroActions" style="margin-top:10px">
+              <button class="btn2" type="button" id="dlProductionBtn">Production PNG</button>
+              <button class="btn2" type="button" id="dlPreviewBtn">Preview JPG</button>
+              <button class="btn2" type="button" id="dlSpecBtn">SPEC JSON</button>
+            </div>
+          </div>
+          <div class="section">
+            <h3>Status Workflow</h3>
+            <select id="submissionStatusSelect">
+              <option>Received</option>
+              <option>Approved</option>
+              <option>In Production</option>
+              <option>Shipped</option>
+              <option>Completed</option>
+            </select>
+            <label style="margin-top:10px">Internal Note</label>
+            <textarea id="submissionInternalNote" placeholder="내부 메모"></textarea>
+            <div class="heroActions" style="margin-top:10px">
+              <button class="btn" type="button" id="saveSubmissionStatusBtn">상태 저장</button>
+            </div>
+            <div class="priceSummary" id="submissionDetailMeta">선택된 요청 없음</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="page-editor" class="routePage" hidden>
+  <div class="wrap">
+    <div class="top">
+      <div class="editorTitleBlock">
+        <h1 class="editorTitle">커스텀 디자인 에디터</h1>
+        <p class="editorSub">캔버스에서 바로 편집하고, 우측 패널에서 주문 옵션을 설정하세요.</p>
+      </div>
+      <div class="metaBox">
+        <span class="badge" id="templateBadge">템플릿: -</span>
+        <span class="badge" id="safeBadge">Bleed - / Safe -</span>
+        <span class="badge" id="pxBadge">-</span>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- LEFT -->
+      <section class="panel canvasPanel">
+        <div class="canvasWrap">
+          <div class="canvasBar">
+            <div class="toggles">
+              <label class="toggle"><input type="checkbox" id="tgBleed" checked />Bleed</label>
+              <label class="toggle"><input type="checkbox" id="tgSafe" checked />Safe</label>
+              <label class="toggle"><input type="checkbox" id="tgText" checked />문구</label>
+              <label class="toggle"><input type="checkbox" id="tgGuides" checked />가이드라인</label>
+            </div>
+            <div class="metaBox">
+              <span class="badge">300DPI</span>
+              <span class="badge">작업ID: <span id="jobId">-</span></span>
+              <span class="badge">검증: <span id="checkState">-</span></span>
+              <span class="badge">드래프트: <span id="draftState">-</span></span>
+            </div>
+          </div>
+
+          <div class="stage">
+            <div class="canvasDock" id="canvasDock">
+              <div class="dockRail" id="dockRail">
+                <div class="dockRailHead">Tools</div>
+                <button class="dockBtn active" type="button" data-drawer-target="flow" title="옵션">
+                  <span class="dockGlyph">⚙</span><span class="dockLabel">옵션</span>
+                </button>
+                <button class="dockBtn" type="button" data-drawer-target="assets" title="업로드">
+                  <span class="dockGlyph">🖼</span><span class="dockLabel">이미지</span>
+                </button>
+              </div>
+
+              <aside class="layerBoard userOnly" id="layerBoard" aria-label="Layers panel">
+                <div class="layerBoardTabs">
+                  <button type="button" class="layerTab active">Layers</button>
+                  <button type="button" class="layerTab" disabled>Asset Export</button>
+                  <button type="button" class="layerTab" disabled>Artboards</button>
+                </div>
+                <div class="layerSearchWrap">
+                  <input id="layerSearch" type="text" placeholder="Search layers" aria-label="레이어 검색" />
+                </div>
+                <div class="layerListShell" id="layerList"></div>
+                <div class="layerBoardControls">
+                  <div class="layerBtnRow">
+                    <button class="btn2" id="layerUpBtn" type="button">위로</button>
+                    <button class="btn2" id="layerDownBtn" type="button">아래로</button>
+                    <button class="btn2" id="layerDuplicateBtn" type="button">복제</button>
+                    <button class="btn2" id="layerDeleteBtn" type="button">삭제</button>
+                  </div>
+                  <div class="layerControlRow">
+                    <label for="layerOpacity">불투명도</label>
+                    <input id="layerOpacity" type="range" min="0" max="100" step="1" value="100" />
+                  </div>
+                  <div class="layerControlRow">
+                    <label for="layerBlend">블렌드</label>
+                    <select id="layerBlend">
+                      <option value="normal">normal</option>
+                      <option value="multiply">multiply</option>
+                      <option value="screen">screen</option>
+                      <option value="overlay">overlay</option>
+                      <option value="darken">darken</option>
+                      <option value="lighten">lighten</option>
+                    </select>
+                  </div>
+                </div>
+              </aside>
+
+              <aside class="dockDrawer" id="dockDrawer" aria-label="Canvas Drawer">
+                <div class="drawerHead">Properties</div>
+                <div class="dockPanel active" data-drawer-panel="flow">
+                  <div class="section userOnly flowCard">
+                    <div class="flowStep">1. 상품 선택</div>
+                    <div class="row">
+                      <div>
+                        <label>상품<span class="req">*</span></label>
+                        <select id="product">
+                          <option value="">불러오는 중...</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label>수량<span class="req">*</span></label>
+                        <input id="qty" type="number" min="1" step="1" value="1" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="section userOnly flowCard">
+                    <div class="flowStep">2. 템플릿 선택</div>
+                    <div class="row">
+                      <div>
+                        <label>템플릿<span class="req">*</span></label>
+                        <select id="template">
+                          <option value="">불러오는 중...</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label>선택 안내</label>
+                        <div class="hint cardHint">상품에 연결된 템플릿만 표시됩니다.</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="section userOnly flowCard">
+                    <div class="flowStep">3. 옵션 선택</div>
+                    <div class="row">
+                      <div>
+                        <label>주문유형<span class="req">*</span></label>
+                        <select id="orderType">
+                          <option value="">선택</option>
+                          <option value="개인">개인</option>
+                          <option value="단체">단체</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label>제작방식<span class="req">*</span></label>
+                        <select id="makeType">
+                          <option value="">선택</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="pill warn" id="groupNotice">
+                      <b>단체 주문 가이드(자동)</b><br/>
+                      행사일 기준 납기 확인 / 교정(수정) 기준 1~2회 권장 / 대표자 1인 커뮤니케이션.
+                    </div>
+
+                    <div style="margin-top:10px">
+                      <label>문구(선택, 최대 20자)</label>
+                      <input id="textLine" type="text" maxlength="20" placeholder="예: 우리 함께 끝까지" />
+                      <div class="hint"><span id="count">0</span>/20</div>
+                    </div>
+
+                    <div style="margin-top:10px">
+                      <label>요청사항(선택)</label>
+                      <textarea id="note" placeholder="예: 배경 제거 필요 / 글자 위치 중앙 / 색상은 흰색"></textarea>
+                    </div>
+                  </div>
+
+                  <div class="section userOnly">
+                    <label>자동 검증 요약</label>
+                    <div style="border:1px solid var(--line);border-radius:14px;background:#fff;padding:12px;font-size:12px;line-height:1.6;white-space:pre-wrap" id="summary">
+                      입력하면 자동으로 체크합니다.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="dockPanel" data-drawer-panel="assets">
+                  <div class="section userOnly">
+                    <label>이미지 업로드/선택<span class="req">*</span></label>
+                    <div class="row">
+                      <div>
+                        <input id="file" type="file" accept="image/*" multiple />
+                        <div class="hint">직접 업로드: PNG/JPG, 여러 파일 동시 선택 가능 (1500px 이상 권장)</div>
+                      </div>
+                      <div>
+                        <button class="btn2" id="clearImageSelect" type="button">활성 레이어 삭제</button>
+                        <div class="hint">이미지를 선택/업로드할 때마다 새 레이어가 추가됩니다.</div>
+                      </div>
+                    </div>
+                    <div class="assetList" id="assetList"></div>
+                  </div>
+
+                  <div class="section userOnly">
+                    <div class="btnRow">
+                      <button class="btn2" id="downloadSpec" type="button">SPEC.json</button>
+                      <button class="btn2" id="downloadPreview" type="button">PREVIEW.jpg</button>
+                      <button class="btn" id="downloadPrint" type="button">PRINT.png</button>
+                    </div>
+                  </div>
+                </div>
+
+              </aside>
+            </div>
+
+            <div id="work" class="work" aria-label="work canvas">
+              <!-- cursor guides -->
+              <div class="cursorV" id="cursorV"></div>
+              <div class="cursorH" id="cursorH"></div>
+
+              <!-- transform box -->
+              <div id="tbox" class="tbox" aria-hidden="true">
+                <div class="label" id="tboxLabel">-</div>
+                <div class="handle h-nw" data-h="nw"></div>
+                <div class="handle h-n"  data-h="n"></div>
+                <div class="handle h-ne" data-h="ne"></div>
+                <div class="handle h-e"  data-h="e"></div>
+                <div class="handle h-se" data-h="se"></div>
+                <div class="handle h-s"  data-h="s"></div>
+                <div class="handle h-sw" data-h="sw"></div>
+                <div class="handle h-w"  data-h="w"></div>
+              </div>
+
+              <!-- draggable layers -->
+              <div id="tplBgLayer" class="templateBgLayer" style="display:none"><img id="tplBg" alt="template background" /></div>
+              <div id="imageLayerStack" aria-label="image layers"></div>
+              <div id="imgLayer" class="layer" style="display:none"><img id="img" alt="uploaded" /></div>
+              <div id="txtLayer" class="textLayer" style="display:block">문구</div>
+
+              <!-- template frame -->
+              <div id="frame" class="frame" aria-hidden="true">
+                <div id="bleedBox" class="bleed"><img id="bleedImg" class="guideOverlay" alt="bleed guide" /></div>
+                <div id="safeBox" class="safe"><img id="safeImg" class="guideOverlay" alt="safe guide" /></div>
+              </div>
+            </div>
+
+            <div class="canvasToolbar" aria-label="Canvas tools">
+              <div class="toolGroup" aria-label="Align">
+                <button class="toolBtn" id="alLeft" type="button" disabled title="좌 정렬" aria-label="좌 정렬">⯇</button>
+                <button class="toolBtn" id="alCenter" type="button" disabled title="가로 중앙" aria-label="가로 중앙">↔</button>
+                <button class="toolBtn" id="alRight" type="button" disabled title="우 정렬" aria-label="우 정렬">⯈</button>
+                <button class="toolBtn" id="alTop" type="button" disabled title="상 정렬" aria-label="상 정렬">⯅</button>
+                <button class="toolBtn" id="alMiddle" type="button" disabled title="세로 중앙" aria-label="세로 중앙">↕</button>
+                <button class="toolBtn" id="alBottom" type="button" disabled title="하 정렬" aria-label="하 정렬">⯆</button>
+              </div>
+
+              <div class="toolGroup" aria-label="Scale">
+                <div class="toolField" title="이미지 스케일(%)">
+                  <span class="toolIcon" aria-hidden="true">⤢</span>
+                  <input id="zoom" type="number" min="30" max="300" value="100" aria-label="이미지 스케일 퍼센트" />
+                  <span class="toolBadge"><span id="zoomVal">100</span>%</span>
+                </div>
+                <div class="toolField" title="문구 크기(px)">
+                  <span class="toolIcon" aria-hidden="true">T</span>
+                  <input id="fontSize" type="number" min="8" max="200" value="26" aria-label="문구 크기 픽셀" />
+                  <span class="toolBadge"><span id="fontVal">26</span>px</span>
+                </div>
+              </div>
+
+              <div class="toolGroup" aria-label="Actions">
+                <button class="toolBtn" id="undo" type="button" title="실행취소 (Ctrl/Cmd+Z)" aria-label="실행취소">↶</button>
+                <button class="toolBtn" id="redo" type="button" title="다시실행 (Ctrl/Cmd+Shift+Z)" aria-label="다시실행">↷</button>
+                <button class="toolBtn" id="fitSafe" type="button" title="선택 레이어 Safe 맞춤" aria-label="선택 레이어 Safe 맞춤">▣</button>
+                <button class="toolBtn" id="centerAll" type="button" title="가운데 정렬(둘다)" aria-label="가운데 정렬(둘다)">◎</button>
+                <button class="toolBtn" id="reset" type="button" title="리셋" aria-label="리셋">↺</button>
+                <button class="toolBtn" id="shortcutsHelp" type="button" title="단축키 안내" aria-label="단축키 안내">?</button>
+                <button class="toolBtn primary" id="export" type="button" title="생산파일 생성(다운로드)" aria-label="생산파일 생성">⬇</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="pill warn" id="warnBox"></div>
+            <div class="pill ok" id="okBox"></div>
+
+            <div class="small">
+              Export는 <code>템플릿 프레임 영역</code>만 Crop 합니다.
+              (팁: 이미지 선택 후 <code>Shift</code>=비율고정, <code>Alt</code>=중심 기준, <code>Ctrl/Cmd+휠</code>=스케일)
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+    </section>
+  </main>
+
+  <footer class="siteFooter" aria-label="Site footer">
+    <div class="siteFooterInner">
+      <div class="siteFooterBrand">
+        <h3>LINEFACTORY</h3>
+        <p>커스텀 팬굿즈 제작 플랫폼 · 디자인부터 생산 파일까지 원스톱</p>
+      </div>
+      <div class="siteFooterInfo">
+        <div><b>주소</b> 서울특별시 마포구 월드컵북로 400, 12층</div>
+        <div><b>고객센터</b> 02-1234-5678</div>
+        <div><b>이메일</b> support@linefactory.co.kr</div>
+        <div><b>운영시간</b> 평일 10:00 - 18:00 (주말/공휴일 휴무)</div>
+      </div>
+      <div class="siteFooterMeta">
+        <a href="#/admin/login">Admin</a>
+        <span>사업자등록번호 123-45-67890</span>
+        <span>통신판매업신고 제2026-서울마포-0001호</span>
+      </div>
+    </div>
+    <div class="siteFooterCopy">© 2026 LINEFACTORY. All rights reserved.</div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="api-client.js" defer></script>
+  <script src="router.js" defer></script>
+  <script src="main.js" defer></script>
 </body>
 </html>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-label="Keyring Promo">
+  <defs>
+    <linearGradient id="bg2" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#1b1222"/>
+      <stop offset="1" stop-color="#6b2f57"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#d6ecff"/>
+      <stop offset="1" stop-color="#ffb8c8"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#bg2)"/>
+  <circle cx="250" cy="230" r="110" fill="#fff" opacity="0.22"/>
+  <rect x="200" y="200" rx="44" ry="44" width="800" height="500" fill="#fefefe" opacity="0.96"/>
+  <circle cx="600" cy="305" r="52" fill="none" stroke="#0f172a" stroke-width="16"/>
+  <rect x="470" y="345" rx="34" ry="34" width="260" height="280" fill="url(#card)"/>
+  <text x="600" y="515" text-anchor="middle" font-family="SUIT, sans-serif" font-weight="800" font-size="72" fill="#ffffff">LF</text>
+  <text x="600" y="760" text-anchor="middle" font-family="SUIT, sans-serif" font-weight="700" font-size="52" fill="#ffe7ef">KEYRING BEST</text>
+</svg>
