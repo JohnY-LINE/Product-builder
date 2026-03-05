@@ -1,0 +1,45 @@
+name: Regression Suite
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: "Regression profile (local|ci|strict)"
+        required: false
+        default: "ci"
+        type: choice
+        options:
+          - local
+          - ci
+          - strict
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    env:
+      NODE_VERSION: "20"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Playwright package
+        run: npm install --no-save playwright
+
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium
+
+      - name: Make scripts executable
+        run: chmod +x scripts/*.sh
+
+      - name: Run regression suite
+        env:
+          REGRESSION_PROFILE: ${{ github.event_name == 'workflow_dispatch' && inputs.profile || 'ci' }}
+        run: ./scripts/ci_regression.sh

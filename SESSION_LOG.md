@@ -1,3 +1,118 @@
+### 2026-03-05 (phase 7: profile split + GitHub Actions workflow)
+- Added profile-based regression runner:
+  - `scripts/regression_profile.sh [local|ci|strict]`
+  - `local`: no E2E, `ci`: E2E with SKIP allowed, `strict`: E2E required.
+- Updated CI wrapper to use profile abstraction:
+  - `scripts/ci_regression.sh` now reads `REGRESSION_PROFILE` (default `ci`).
+- Added GitHub Actions workflow:
+  - `.github/workflows/regression.yml`
+  - triggers on `push(main)`, `pull_request`, and `workflow_dispatch` with selectable profile.
+  - installs Playwright package + Chromium and runs `./scripts/ci_regression.sh`.
+- Validation:
+  - `./scripts/regression_profile.sh local` => pass
+  - `./scripts/regression_profile.sh ci` => pass (E2E skipped safely in current container)
+  - `./scripts/regression_profile.sh strict` => expected fail in current container (missing browser runtime libs).
+
+### 2026-03-05 (phase 6: E2E required mode + CI runner)
+- Added strict E2E gate mode via env var:
+  - `E2E_REQUIRED=1` now converts E2E skip conditions (missing playwright/browser runtime libs) into hard failure.
+  - implemented in `scripts/admin_e2e_smoke_playwright.mjs`.
+- Updated E2E runner:
+  - `scripts/run_admin_e2e.sh` now forwards `E2E_REQUIRED` and prints execution mode.
+- Updated integrated suite behavior:
+  - `scripts/full_regression_suite.sh` now auto-runs E2E when `E2E_REQUIRED=1` (even if `RUN_E2E_SMOKE` unset).
+- Added CI-oriented wrapper:
+  - `scripts/ci_regression.sh`
+  - default `RUN_E2E_SMOKE=1`, `E2E_REQUIRED=0`, overridable by env.
+- Validation:
+  - `./scripts/ci_regression.sh` => pass (E2E skipped safely in current container)
+  - `E2E_REQUIRED=1 ./scripts/run_admin_e2e.sh` => expected fail (current container missing browser runtime libs like `libglib`).
+
+### 2026-03-05 (phase 5: browser E2E scaffold with graceful skip)
+- Added Playwright-based admin E2E smoke script:
+  - `scripts/admin_e2e_smoke_playwright.mjs`
+  - checks core admin routes/pages: products/new/templates/options/inbox + admin summary render.
+- Added local runner:
+  - `scripts/run_admin_e2e.sh` (starts local http server, runs E2E script).
+- Updated integrated suite:
+  - `scripts/full_regression_suite.sh` now optionally runs E2E when `RUN_E2E_SMOKE=1`.
+- Environment-aware hardening:
+  - E2E script now returns `[SKIP]` (exit 0) when Playwright/browser runtime prerequisites are missing (e.g., shared libs like `libglib`), instead of failing whole suite.
+- Validation:
+  - `./scripts/run_admin_e2e.sh` => `[SKIP]` in current container (missing browser runtime libs)
+  - `RUN_E2E_SMOKE=1 ./scripts/full_regression_suite.sh` => passed (static suites pass + E2E skipped safely).
+
+### 2026-03-05 (phase 4: admin-flow regression suite)
+- Added admin-focused regression checker: `scripts/admin_flow_regression_check.sh`.
+- Added integrated suite runner: `scripts/full_regression_suite.sh`.
+- Admin flow checks now cover:
+  - product save handler + required guards + upsert wiring
+  - category add/subcategory sync wiring
+  - template save + page option sync wiring
+  - router category reorder/delete wiring
+  - selected-product bulk delete guards
+  - router->main catalog update propagation wiring.
+- Execution: `./scripts/full_regression_suite.sh` passed (quick + flow + admin).
+
+### 2026-03-05 (phase 3: status-render hardening + flow regression automation)
+- Replaced validation status rendering in `main.js` from direct `innerHTML` composition to DOM-based `renderStatusLines(...)` helper.
+  - `warnBox` / `okBox` now render title + lines via text nodes, reducing injection/render-break risk from dynamic text.
+- Added expanded flow-level regression script:
+  - `scripts/flow_regression_check.sh` (executable)
+  - Runs quick checks + shared storage key consistency + catalog-update event wiring + route decode guard wiring + image sanitize wiring.
+- Updated `scripts/quick_regression_check.sh` to validate new status-render helper wiring.
+- Execution: `./scripts/flow_regression_check.sh` passed.
+
+### 2026-03-05 (quick regression script added)
+- Added executable smoke script: `scripts/quick_regression_check.sh`.
+- Script checks:
+  - `node --check` for `main.js`, `router.js`, `api-client.js`
+  - presence of hardening helpers (`sanitizeImageUrl`, `escapeHtml`, `safeDecodeUriSegment`)
+  - key wiring assertions (route decode, template-image URL sanitize, warnBox escape).
+- Execution result: all checks passed.
+
+### 2026-03-05 (main.js stability/security hardening pass)
+- Continued robustness refactor in `main.js` with low-risk defensive guards.
+- Added shared helpers:
+  - `escapeHtml` for safe warning message rendering
+  - `sanitizeImageUrl` for image/template URL normalization.
+- Applied URL sanitization across local/supabase/template/asset normalization paths and runtime render/export paths:
+  - snapshot restore (`resolveSnapshotImageSource`), layer render, template background/guide overlays, asset thumbnails, export render pipeline.
+- Hardened image layer creation path:
+  - `makeImageLayerFromSource` now rejects invalid URLs
+  - `setImageSource` validates input URL before probing/loading.
+- Reduced injection risk in validation UI:
+  - `warnBox` messages now escape dynamic warning/error text (e.g., user file/layer names).
+- Validation: `node --check main.js`, `node --check router.js`, `node --check api-client.js` passed.
+
+### 2026-03-05 (router stability/security hardening pass)
+- Per user request for flow robustness, applied defensive hardening in `router.js` without changing core UX.
+- Added safe route segment decoding (`safeDecodeUriSegment`) so encoded product/category/submission IDs resolve reliably.
+- Added mockup image URL guard (`sanitizeImageUrl`) before `src` injection to block invalid/non-image schemes.
+- Reduced XSS/render-break risk by escaping dynamic values in key `innerHTML` render paths:
+  - storefront cards/category pages/home category cards
+  - detail option summary/final check
+  - my submissions table rows
+  - admin template/product select options.
+- Validation: `node --check router.js`, `node --check main.js`, `node --check api-client.js` passed.
+
+### 2026-03-05 (hard-refresh menu reappear bug: second hardening)
+- User reproduced reappear bug after multiple hard refreshes; top nav showed legacy categories again.
+- Additional root-cause hardening:
+  - `router.js:getAllStoreCategories()` now prioritizes admin-managed custom category list (`lf.product.categories.v1`) over catalog-derived categories; catalog is fallback only when custom list is empty.
+  - `main.js` category sync no longer expands `productCategories` from fetched product rows on every refresh.
+  - Added `getStableProductCategories()` to keep persisted admin category set authoritative (with deleted-category filter), using product-derived categories only as first-time fallback.
+- Existing router-event local-sync guard remains active to prevent router updates being overwritten by remote refresh.
+- Validation: `node --check main.js`, `node --check router.js` passed.
+
+### 2026-03-05 (top menu rollback-after-admin-fix)
+- Root cause identified: after router admin menu/category changes, `lf:catalog-updated` triggered `main.js` remote refresh (`refreshProductData`) which could overwrite local `lf.products.v1` with older Supabase categories, causing deleted old menus to reappear.
+- Fix in `main.js`:
+  - Added router-source guard in `lf:catalog-updated` listener (`evt.detail.source === "router"`) to run local-first sync and skip remote overwrite path.
+  - Added `syncCatalogFromLocal()` to rebuild products/categories/templates/assets from local storage and re-render UI consistently.
+  - Hardened category merge with deleted-category filtering via `mergeKnownCategories()`/`getDeletedCategorySet()` and applied it to `getKnownProductCategories` + `refreshProductData`.
+- Validation: `node --check main.js`, `node --check router.js` passed.
+
 ### 2026-03-05 (final version pushed to github)
 - Committed all current workspace changes as `33ef3fb` with message `chore: save final version`.
 - Pushed `main` to `origin/main` successfully (`3c9b643 -> 33ef3fb`).

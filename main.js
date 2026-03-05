@@ -80,6 +80,27 @@ function sanitizeFileName(name){
   return (name || "file").replace(/[^a-zA-Z0-9._-]/g, "_");
 }
 
+function sanitizeImageUrl(raw){
+  const value = String(raw || "").trim();
+  if(!value) return "";
+  return /^(https?:|blob:|data:image\/|\/|\.{1,2}\/)/i.test(value) ? value : "";
+}
+
+function renderStatusLines(boxEl, title, lines){
+  if(!boxEl) return;
+  boxEl.textContent = "";
+  const strong = document.createElement("b");
+  strong.textContent = String(title || "");
+  boxEl.appendChild(strong);
+  const normalized = Array.isArray(lines) ? lines : [];
+  if(!normalized.length) return;
+  boxEl.appendChild(document.createElement("br"));
+  normalized.forEach((line, idx) => {
+    if(idx > 0) boxEl.appendChild(document.createElement("br"));
+    boxEl.appendChild(document.createTextNode(`• ${String(line || "")}`));
+  });
+}
+
 function clamp(n, min, max){
   return Math.max(min, Math.min(max, n));
 }
@@ -288,14 +309,14 @@ function loadTemplatesLocal(){
         bleed_mm: Number(tpl.bleed_mm),
         safe_mm: Number(tpl.safe_mm),
         export: { dpi: Number(tpl.export.dpi) },
-        templateImageUrl: tpl.templateImageUrl || "",
+        templateImageUrl: sanitizeImageUrl(tpl.templateImageUrl || ""),
         templateImagePath: tpl.templateImagePath || null,
         templateImageName: tpl.templateImageName || "",
         templateImageFit: normalizeImageFit(tpl.templateImageFit),
-        bleedImageUrl: tpl.bleedImageUrl || "",
+        bleedImageUrl: sanitizeImageUrl(tpl.bleedImageUrl || ""),
         bleedImagePath: tpl.bleedImagePath || null,
         bleedImageName: tpl.bleedImageName || "",
-        safeImageUrl: tpl.safeImageUrl || "",
+        safeImageUrl: sanitizeImageUrl(tpl.safeImageUrl || ""),
         safeImagePath: tpl.safeImagePath || null,
         safeImageName: tpl.safeImageName || ""
       }));
@@ -319,7 +340,7 @@ function loadAssetsLocal(){
         name: asset.name || "image",
         size: Number(asset.size || 0),
         type: asset.type || "image/*",
-        previewUrl: asset.previewUrl || asset.dataUrl || "",
+        previewUrl: sanitizeImageUrl(asset.previewUrl || asset.dataUrl || ""),
         storagePath: asset.storagePath || null,
         createdAt: asset.createdAt || new Date().toISOString(),
         source: asset.source || "local"
@@ -371,14 +392,14 @@ function rowToTemplate(row){
     bleed_mm: Number(row.bleed_mm),
     safe_mm: Number(row.safe_mm),
     export: { dpi: Number(row.dpi) },
-    templateImageUrl: row.template_image_url || "",
+    templateImageUrl: sanitizeImageUrl(row.template_image_url || ""),
     templateImagePath: row.template_image_path || null,
     templateImageName: row.template_image_name || "",
     templateImageFit: normalizeImageFit(row.template_image_fit),
-    bleedImageUrl: row.bleed_image_url || "",
+    bleedImageUrl: sanitizeImageUrl(row.bleed_image_url || ""),
     bleedImagePath: row.bleed_image_path || null,
     bleedImageName: row.bleed_image_name || "",
-    safeImageUrl: row.safe_image_url || "",
+    safeImageUrl: sanitizeImageUrl(row.safe_image_url || ""),
     safeImagePath: row.safe_image_path || null,
     safeImageName: row.safe_image_name || ""
   };
@@ -392,7 +413,7 @@ function rowToAsset(row){
     name: row.name || "image",
     size: Number(row.size || 0),
     type: row.mime_type || "image/*",
-    previewUrl: row.public_url || "",
+    previewUrl: sanitizeImageUrl(row.public_url || ""),
     storagePath: row.storage_path || null,
     createdAt: row.created_at || new Date().toISOString(),
     source: "supabase"
@@ -1014,7 +1035,9 @@ function applyLayerStyle(layer, el){
 }
 
 function makeImageLayerFromSource(src, meta){
-  const uploadCacheKey = meta.source === "upload" ? cacheUploadedImageSource(src, meta.uploadCacheKey) : null;
+  const safeSrc = sanitizeImageUrl(src);
+  if(!safeSrc) return null;
+  const uploadCacheKey = meta.source === "upload" ? cacheUploadedImageSource(safeSrc, meta.uploadCacheKey) : null;
   const active = getActiveImageLayer();
   const baseX = active ? active.x : 0;
   const baseY = active ? active.y : 0;
@@ -1022,7 +1045,7 @@ function makeImageLayerFromSource(src, meta){
   const layer = {
     id: uid("layer"),
     name: makeLayerName(meta),
-    src,
+    src: safeSrc,
     source: meta.source || "upload",
     assetId: meta.assetId || null,
     productId: meta.productId || state.productId || DEFAULT_PRODUCT.id,
@@ -1140,10 +1163,10 @@ function resolveSnapshotImageSource(meta){
   if(!meta) return "";
   if(meta.source === "library"){
     const asset = assets.find((x) => x.id === meta.assetId);
-    return asset?.previewUrl || "";
+    return sanitizeImageUrl(asset?.previewUrl || "");
   }
   if(meta.source === "upload"){
-    return meta.uploadCacheKey ? (uploadedImageCache.get(meta.uploadCacheKey) || "") : "";
+    return meta.uploadCacheKey ? sanitizeImageUrl(uploadedImageCache.get(meta.uploadCacheKey) || "") : "";
   }
   return "";
 }
@@ -1196,7 +1219,7 @@ function applyEditorSnapshot(snapshot){
     };
     state.imageLayers = Array.isArray(snapshot.imageLayers)
       ? snapshot.imageLayers.map((layer) => {
-        const src = layer.src || resolveSnapshotImageSource(layer);
+        const src = sanitizeImageUrl(layer.src || resolveSnapshotImageSource(layer));
         return {
           id: layer.id || uid("layer"),
           name: layer.name || makeLayerName(layer),
@@ -1224,7 +1247,7 @@ function applyEditorSnapshot(snapshot){
       }).filter((x) => !!x.src)
       : [];
     if(!state.imageLayers.length && snapshot.image){
-      const src = resolveSnapshotImageSource(snapshot.image);
+      const src = sanitizeImageUrl(resolveSnapshotImageSource(snapshot.image));
       if(src){
         state.imageLayers = [{
           id: uid("layer"),
@@ -1358,7 +1381,7 @@ function renderImageLayers(){
     if(layer.locked) el.dataset.locked = "true";
 
     const img = document.createElement("img");
-    img.src = layer.src;
+    img.src = sanitizeImageUrl(layer.src);
     img.alt = layer.name || layer.fileName || "layer";
     el.appendChild(img);
 
@@ -1784,7 +1807,7 @@ $("addTemplatePageBtn").addEventListener("click", () => {
 function applyTemplateBackground(overrideUrl){
   const layer = $("tplBgLayer");
   const img = $("tplBg");
-  const src = overrideUrl || state.templatePreviewUrl || currentTemplate.templateImageUrl || "";
+  const src = sanitizeImageUrl(overrideUrl || state.templatePreviewUrl || currentTemplate.templateImageUrl || "");
   if(!src){
     layer.style.display = "none";
     img.src = "";
@@ -1802,8 +1825,8 @@ function applyTemplateBackground(overrideUrl){
 
 function applyGuideOverlays(){
   const fit = normalizeImageFit(currentTemplate.templateImageFit);
-  const bleedSrc = state.bleedPreviewUrl || currentTemplate.bleedImageUrl || "";
-  const safeSrc = state.safePreviewUrl || currentTemplate.safeImageUrl || "";
+  const bleedSrc = sanitizeImageUrl(state.bleedPreviewUrl || currentTemplate.bleedImageUrl || "");
+  const safeSrc = sanitizeImageUrl(state.safePreviewUrl || currentTemplate.safeImageUrl || "");
   const bleedImg = $("bleedImg");
   const safeImg = $("safeImg");
 
@@ -2018,15 +2041,31 @@ function renderProductControls(){
 }
 
 function getKnownProductCategories(){
-  const deleted = new Set(
+  return mergeKnownCategories([
+    ...productCategories,
+    ...products.map((p) => p.category)
+  ]);
+}
+
+function getDeletedCategorySet(){
+  return new Set(
     (safeJsonParse(localStorage.getItem(CMS_DELETED_CATEGORIES_KEY), []) || [])
       .map((x) => String(x || "").trim())
       .filter(Boolean)
   );
-  return normalizeCategoryList([
-    ...productCategories,
-    ...products.map((p) => p.category)
-  ]).filter((name) => !deleted.has(name));
+}
+
+function mergeKnownCategories(input){
+  const deleted = getDeletedCategorySet();
+  return normalizeCategoryList(Array.isArray(input) ? input : [])
+    .filter((name) => !deleted.has(name));
+}
+
+function getStableProductCategories(productsInput){
+  const persisted = mergeKnownCategories(loadProductCategories());
+  if(persisted.length) return persisted;
+  return mergeKnownCategories((Array.isArray(productsInput) ? productsInput : [])
+    .map((p) => p?.category));
 }
 
 function renderAdminProductCategorySelect(selectedCategory){
@@ -2169,10 +2208,7 @@ async function refreshProductData(){
   products = await fetchProducts();
   if(!products.length && !isAllProductsDeleted()) products = [DEFAULT_PRODUCT];
   saveProductsLocal(products);
-  productCategories = normalizeCategoryList([
-    ...productCategories,
-    ...products.map((p) => p.category)
-  ]);
+  productCategories = getStableProductCategories(products);
   saveProductCategories(productCategories);
 
   // Keep only existing product ids and ensure defaults.
@@ -2186,6 +2222,38 @@ async function refreshProductData(){
 
   renderProductControls();
   renderAdminProductList();
+}
+
+function syncCatalogFromLocal(){
+  products = loadProductsLocal();
+  if(!products.length && !isAllProductsDeleted()) products = [DEFAULT_PRODUCT];
+  saveProductsLocal(products);
+  productCategories = getStableProductCategories(products);
+  saveProductCategories(productCategories);
+
+  const nextMap = {};
+  products.forEach((p) => {
+    const list = normalizeMakeTypeList(productMakeTypes[p.id] || []);
+    nextMap[p.id] = list.length ? list : DEFAULT_MAKE_TYPES;
+  });
+  productMakeTypes = nextMap;
+  saveProductMakeTypes(productMakeTypes);
+
+  templates = loadTemplatesLocal();
+  if(!templates.length) templates = [DEFAULT_TEMPLATE];
+  renderTemplateSelect();
+  renderAdminTemplateList();
+  syncAdminTemplatePageOptions(currentTemplate?.id || "");
+
+  assets = loadAssetsLocal();
+  renderAssetList();
+  renderAdminImageList();
+  renderDefaultAssetSelect($("adminDefaultProduct").value || state.productId || DEFAULT_PRODUCT.id);
+  renderAdminProductInlineDefaultAssetSelect($("adminProductId").value || state.productId || DEFAULT_PRODUCT.id);
+
+  renderProductControls();
+  renderAdminProductList();
+  validateAll();
 }
 
 function renderTemplateSelect(){
@@ -2966,7 +3034,7 @@ function renderAssetList(){
 
     const thumb = document.createElement("img");
     thumb.className = "assetThumb";
-    thumb.src = asset.previewUrl;
+    thumb.src = sanitizeImageUrl(asset.previewUrl);
     thumb.alt = asset.title || asset.name;
 
     const title = document.createElement("div");
@@ -3005,7 +3073,7 @@ function renderAdminImageList(){
 
     const thumb = document.createElement("img");
     thumb.className = "assetThumb";
-    thumb.src = asset.previewUrl;
+    thumb.src = sanitizeImageUrl(asset.previewUrl);
     thumb.alt = asset.title || asset.name;
     thumb.style.width = "64px";
     thumb.style.aspectRatio = "1 / 1";
@@ -3054,7 +3122,13 @@ async function refreshAssetData(){
 }
 
 function setImageSource(src, meta){
-  const layer = makeImageLayerFromSource(src, meta);
+  const safeSrc = sanitizeImageUrl(src);
+  if(!safeSrc){
+    alert("이미지 URL 형식이 올바르지 않습니다.");
+    return;
+  }
+  const layer = makeImageLayerFromSource(safeSrc, meta);
+  if(!layer) return;
   const probe = new Image();
   probe.onload = () => {
     const cur = getImageLayerById(layer.id);
@@ -3078,7 +3152,7 @@ function setImageSource(src, meta){
     renderLayerList();
     validateAll();
   };
-  probe.src = src;
+  probe.src = safeSrc;
 
   renderImageLayers();
   renderLayerList();
@@ -3598,15 +3672,15 @@ function validateAll(){
   $("okBox").style.display = ok ? "block" : "none";
 
   if(errors.length){
-    $("warnBox").innerHTML = "<b>생산 불가(필수 미입력)</b><br/>" + errors.map((e)=>`• ${e}`).join("<br/>");
+    renderStatusLines($("warnBox"), "생산 불가(필수 미입력)", errors);
   } else if(warnings.length){
-    $("warnBox").innerHTML = "<b>주의(생산 전 조정 권장)</b><br/>" + warnings.map((w)=>`• ${w}`).join("<br/>");
+    renderStatusLines($("warnBox"), "주의(생산 전 조정 권장)", warnings);
   } else {
     $("warnBox").style.display = "none";
   }
 
   if(ok){
-    $("okBox").innerHTML = "<b>✅ 생산 준비 완료</b><br/>템플릿 프레임 영역으로 PRINT/Preview를 생성합니다.";
+    renderStatusLines($("okBox"), "✅ 생산 준비 완료", ["템플릿 프레임 영역으로 PRINT/Preview를 생성합니다."]);
   }
 
   updateTBox();
@@ -3707,7 +3781,7 @@ async function renderFrameToCanvas(outW, outH){
   ctx.fillStyle = "#fff";
   ctx.fillRect(0, 0, outW, outH);
 
-  const templateBgSrc = state.templatePreviewUrl || currentTemplate.templateImageUrl || "";
+  const templateBgSrc = sanitizeImageUrl(state.templatePreviewUrl || currentTemplate.templateImageUrl || "");
   if(templateBgSrc){
     const bg = new Image();
     bg.src = templateBgSrc;
@@ -3756,12 +3830,13 @@ async function renderFrameToCanvas(outW, outH){
   }
 
   for(const layer of state.imageLayers){
-    if(!layer.visible || !layer.src) continue;
+    const safeLayerSrc = sanitizeImageUrl(layer.src);
+    if(!layer.visible || !safeLayerSrc) continue;
     const layerEl = work.querySelector(`.layer[data-layer-id="${layer.id}"]`);
     if(!layerEl || layerEl.style.display === "none") continue;
 
     const img = new Image();
-    img.src = layer.src;
+    img.src = safeLayerSrc;
     try {
       await img.decode();
     } catch {
@@ -4250,6 +4325,11 @@ async function init(){
     resizeRulers();
   });
   window.addEventListener("lf:catalog-updated", async (evt) => {
+    const eventSource = String(evt?.detail?.source || "");
+    if(eventSource === "router"){
+      syncCatalogFromLocal();
+      return;
+    }
     try {
       await refreshProductData();
       await refreshTemplateData();

@@ -411,16 +411,21 @@
   function getAllStoreCategories() {
     if (state.allProductsDeleted) return [];
     const custom = loadJson(EDITOR_STORE_KEYS.productCategories, []);
-    const fromCustom = Array.isArray(custom) ? custom : [];
-    const fromCatalog = getCatalogProducts().map((p) => String(p.category || "").trim());
+    const fromCustom = [...new Set((Array.isArray(custom) ? custom : [])
+      .map((x) => String(x || "").trim())
+      .filter(Boolean))];
+    const fromCatalog = [...new Set(getCatalogProducts()
+      .map((p) => String(p.category || "").trim())
+      .filter(Boolean))];
     const deleted = new Set(
       (Array.isArray(state.deletedCategories) ? state.deletedCategories : [])
         .map((x) => String(x || "").trim())
         .filter(Boolean)
     );
-    const merged = [...new Set([...fromCustom, ...fromCatalog].map((x) => String(x || "").trim()).filter(Boolean))]
-      .filter((x) => !deleted.has(x));
-    if (merged.length) return merged;
+    const filteredCustom = fromCustom.filter((x) => !deleted.has(x));
+    if (filteredCustom.length) return filteredCustom;
+    const filteredCatalog = fromCatalog.filter((x) => !deleted.has(x));
+    if (filteredCatalog.length) return filteredCatalog;
     const fallback = STORE_CATEGORIES.find((x) => !deleted.has(x)) || STORE_CATEGORIES[0];
     return [fallback];
   }
@@ -579,6 +584,20 @@
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#39;");
+  }
+
+  function safeDecodeUriSegment(segment) {
+    try {
+      return decodeURIComponent(String(segment || ""));
+    } catch {
+      return String(segment || "");
+    }
+  }
+
+  function sanitizeImageUrl(raw) {
+    const value = String(raw || "").trim();
+    if (!value) return "";
+    return /^(https?:|blob:|data:image\/|\/|\.{1,2}\/)/i.test(value) ? value : "";
   }
 
   function sanitizeDetailHtml(rawHtml) {
@@ -947,22 +966,46 @@
     if (path === "/" || path === "") return { key: "/", pageId: PAGE_MAP["/"], params: {} };
     if (path === "/products") return { key: "/products", pageId: PAGE_MAP["/products"], params: {} };
     if (parts[0] === "products" && parts[1] === "category" && parts[2]) {
-      return { key: "/products/category/:categorySlug", pageId: PAGE_MAP["/products"], params: { categorySlug: parts[2] } };
+      return {
+        key: "/products/category/:categorySlug",
+        pageId: PAGE_MAP["/products"],
+        params: { categorySlug: safeDecodeUriSegment(parts[2]) }
+      };
     }
-    if (parts[0] === "products" && parts[1]) return { key: "/products/:id", pageId: PAGE_MAP["/products/:id"], params: { id: parts[1] } };
-    if (parts[0] === "editor" && parts[1]) return { key: "/editor/:productId", pageId: PAGE_MAP["/editor/:productId"], params: { productId: parts[1] } };
+    if (parts[0] === "products" && parts[1]) {
+      return {
+        key: "/products/:id",
+        pageId: PAGE_MAP["/products/:id"],
+        params: { id: safeDecodeUriSegment(parts[1]) }
+      };
+    }
+    if (parts[0] === "editor" && parts[1]) {
+      return {
+        key: "/editor/:productId",
+        pageId: PAGE_MAP["/editor/:productId"],
+        params: { productId: safeDecodeUriSegment(parts[1]) }
+      };
+    }
     if (path === "/my-submissions") return { key: "/my-submissions", pageId: PAGE_MAP["/my-submissions"], params: {} };
     if (path === "/admin/login") return { key: "/admin/login", pageId: PAGE_MAP["/admin/login"], params: {} };
     if (path === "/admin/products") return { key: "/admin/products", pageId: PAGE_MAP["/admin/products"], params: {} };
     if (path === "/admin/products/new") return { key: "/admin/products/new", pageId: PAGE_MAP["/admin/products/new"], params: {} };
     if (parts[0] === "admin" && parts[1] === "products" && parts[2] && parts[3] === "edit") {
-      return { key: "/admin/products/:id/edit", pageId: PAGE_MAP["/admin/products/:id/edit"], params: { id: parts[2] } };
+      return {
+        key: "/admin/products/:id/edit",
+        pageId: PAGE_MAP["/admin/products/:id/edit"],
+        params: { id: safeDecodeUriSegment(parts[2]) }
+      };
     }
     if (path === "/admin/templates") return { key: "/admin/templates", pageId: PAGE_MAP["/admin/templates"], params: {} };
     if (path === "/admin/options") return { key: "/admin/options", pageId: PAGE_MAP["/admin/options"], params: {} };
     if (path === "/admin/inbox") return { key: "/admin/inbox", pageId: PAGE_MAP["/admin/inbox"], params: {} };
     if (parts[0] === "admin" && parts[1] === "inbox" && parts[2]) {
-      return { key: "/admin/inbox/:submissionId", pageId: PAGE_MAP["/admin/inbox/:submissionId"], params: { submissionId: parts[2] } };
+      return {
+        key: "/admin/inbox/:submissionId",
+        pageId: PAGE_MAP["/admin/inbox/:submissionId"],
+        params: { submissionId: safeDecodeUriSegment(parts[2]) }
+      };
     }
     return { key: "/", pageId: PAGE_MAP["/"], params: {} };
   }
@@ -1008,17 +1051,17 @@
       card.dataset.productId = p.id;
       card.innerHTML = `
         <div class="thumbMock">
-          <span class="thumbLabel">${p.mockups[0]}</span>
+          <span class="thumbLabel">${esc(p.mockups[0] || "")}</span>
           <div class="thumbMeta">
-            <h3>${p.name}</h3>
-            <p>${p.description}</p>
+            <h3>${esc(p.name)}</h3>
+            <p>${esc(p.description)}</p>
           </div>
         </div>
         <div class="cardMeta">
           <span>${won(p.basePrice)}</span>
         </div>
         <div class="heroActions">
-          <a class="btn productCustomizeLink" href="#/editor/${p.id}">Customize</a>
+          <a class="btn productCustomizeLink" href="#/editor/${encodeURIComponent(p.id)}">Customize</a>
         </div>
       `;
       root.appendChild(card);
@@ -1051,7 +1094,7 @@
         }))
       );
       filterBar.innerHTML = buttons
-        .map((btn) => `<button class="adminFilterBtn${btn.key === category ? " active" : ""}" type="button" data-category-filter="${btn.key}">${btn.label}</button>`)
+        .map((btn) => `<button class="adminFilterBtn${btn.key === category ? " active" : ""}" type="button" data-category-filter="${esc(btn.key)}">${esc(btn.label)}</button>`)
         .join("");
       filterBar.querySelectorAll("[data-category-filter]").forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -1211,23 +1254,23 @@
         ${sections.map((section) => `
           <section class="categoryShowcaseBlock">
             <div class="categoryShowcaseHead">
-              <h3>${section.typeName}</h3>
+              <h3>${esc(section.typeName)}</h3>
             </div>
             <div class="sectionGrid">
               ${section.items.map((item) => `
-                <article class="productCard" data-product-id="${item.productId}">
+                <article class="productCard" data-product-id="${esc(item.productId)}">
                   <div class="thumbMock">
-                    <span class="thumbLabel">${item.mockup}</span>
+                    <span class="thumbLabel">${esc(item.mockup)}</span>
                     <div class="thumbMeta">
-                      <h3>${item.name}</h3>
-                      <p>${item.description}</p>
+                      <h3>${esc(item.name)}</h3>
+                      <p>${esc(item.description)}</p>
                     </div>
                   </div>
                   <div class="cardMeta">
                     <span>${won(item.basePrice)}</span>
                   </div>
                   <div class="heroActions">
-                    <a class="btn productCustomizeLink" href="#/editor/${item.productId}">Customize</a>
+                    <a class="btn productCustomizeLink" href="#/editor/${encodeURIComponent(item.productId)}">Customize</a>
                   </div>
                 </article>
               `).join("")}
@@ -1253,9 +1296,9 @@
       }));
       categoryGrid.innerHTML = entries.length
         ? entries.map((x) => `
-          <a class="homeCategoryCard" href="#/products" data-home-category="${x.category}">
-            <h3>${x.category}</h3>
-            <p>${x.count}개 상품 · 맞춤 제작 가능</p>
+          <a class="homeCategoryCard" href="#/products" data-home-category="${esc(x.category)}">
+            <h3>${esc(x.category)}</h3>
+            <p>${esc(x.count)}개 상품 · 맞춤 제작 가능</p>
           </a>
         `).join("")
         : `<div class="homeCategoryCard"><h3>카테고리 준비중</h3><p>곧 다양한 상품군이 추가됩니다.</p></div>`;
@@ -1446,7 +1489,12 @@
         tabs.querySelectorAll("button").forEach((x) => x.classList.remove("activeTab"));
         b.classList.add("activeTab");
         if (m.imageUrl) {
-          view.innerHTML = `<img class="mockupPreviewImg" src="${m.imageUrl}" alt="${product.name} ${m.name}" /><div class="mockupCaption">${product.name} - ${m.name}</div>`;
+          const safeSrc = sanitizeImageUrl(m.imageUrl);
+          if (safeSrc) {
+            view.innerHTML = `<img class="mockupPreviewImg" src="${safeSrc}" alt="${esc(product.name)} ${esc(m.name)}" /><div class="mockupCaption">${esc(product.name)} - ${esc(m.name)}</div>`;
+          } else {
+            view.textContent = `${product.name} - ${m.name} Mockup`;
+          }
         } else {
           view.textContent = `${product.name} - ${m.name} Mockup`;
         }
@@ -1454,7 +1502,12 @@
       tabs.appendChild(b);
     });
     if (views[0]?.imageUrl) {
-      view.innerHTML = `<img class="mockupPreviewImg" src="${views[0].imageUrl}" alt="${product.name} ${views[0].name}" /><div class="mockupCaption">${product.name} - ${views[0].name}</div>`;
+      const safeSrc = sanitizeImageUrl(views[0].imageUrl);
+      if (safeSrc) {
+        view.innerHTML = `<img class="mockupPreviewImg" src="${safeSrc}" alt="${esc(product.name)} ${esc(views[0].name)}" /><div class="mockupCaption">${esc(product.name)} - ${esc(views[0].name)}</div>`;
+      } else {
+        view.textContent = `${product.name} - ${(views[0]?.name || "Front")} Mockup`;
+      }
     } else {
       view.textContent = `${product.name} - ${(views[0]?.name || "Front")} Mockup`;
     }
@@ -1475,13 +1528,13 @@
         <div class="summaryRow"><span>1개 단가</span><b>${won(unitTotal)}</b></div>
         <div class="summaryRow"><span>수량</span><b>${qty}개</b></div>
         <div class="summaryRow total"><span>총 결제예상</span><b>${won(orderTotal)}</b></div>
-        <div class="summaryMeta">선택: ${selection.size.value} / ${selection.color.value} / ${selection.material.value}</div>
+        <div class="summaryMeta">선택: ${esc(selection.size.value)} / ${esc(selection.color.value)} / ${esc(selection.material.value)}</div>
       `;
       const multiView = views.length > 1;
       const eta = multiView ? "3-5 영업일" : "2-4 영업일";
       finalCheck.innerHTML = `
         <div class="finalCheckTitle">주문 전 최종 확인</div>
-        <div class="finalCheckRow"><span>선택 옵션</span><b>${selection.size.value} / ${selection.color.value} / ${selection.material.value}</b></div>
+        <div class="finalCheckRow"><span>선택 옵션</span><b>${esc(selection.size.value)} / ${esc(selection.color.value)} / ${esc(selection.material.value)}</b></div>
         <div class="finalCheckRow"><span>수량</span><b>${qty}개</b></div>
         <div class="finalCheckRow"><span>예상 제작</span><b>${eta}</b></div>
         <div class="finalCheckNote">디자인 확정 후 생산 파일 기준으로 제작이 진행됩니다.</div>
@@ -1558,7 +1611,7 @@
     tbody.innerHTML = "";
     state.submissions.forEach((s) => {
       const tr = document.createElement("tr");
-      tr.innerHTML = `<td>${new Date(s.createdAt).toLocaleString()}</td><td>${s.productName}</td><td>${s.optionsLabel}</td><td><span class="statusChip">${s.status}</span></td>`;
+      tr.innerHTML = `<td>${esc(new Date(s.createdAt).toLocaleString())}</td><td>${esc(s.productName)}</td><td>${esc(s.optionsLabel)}</td><td><span class="statusChip">${esc(s.status)}</span></td>`;
       tbody.appendChild(tr);
     });
     if (!state.submissions.length) {
@@ -1937,7 +1990,7 @@
 
     const templateRows = loadEditorTemplates();
     tplEl.innerHTML = templateRows
-      .map((tpl) => `<option value="${tpl.id}">${tpl.name} [${tpl.pageName}] (${tpl.id})</option>`)
+      .map((tpl) => `<option value="${esc(tpl.id)}">${esc(tpl.name)} [${esc(tpl.pageName)}] (${esc(tpl.id)})</option>`)
       .join("");
     const linked = new Set(current ? getLinkedTemplateIds(current.id) : []);
     Array.from(tplEl.options).forEach((opt) => {
@@ -2414,7 +2467,7 @@
     if (!productSel) return;
     const current = productSel.value;
     const catalog = getCatalogProducts();
-    productSel.innerHTML = catalog.map((p) => `<option value="${p.id}">${p.name}</option>`).join("");
+    productSel.innerHTML = catalog.map((p) => `<option value="${esc(p.id)}">${esc(p.name)}</option>`).join("");
     if (catalog.some((p) => p.id === current)) {
       productSel.value = current;
     } else if (catalog[0]) {
